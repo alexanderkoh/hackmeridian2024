@@ -1,8 +1,21 @@
 'use client'
 
+import { useEffect } from 'react'
+import { useRouter } from 'next/navigation'
 import Sidebar from '../components/Sidebar'
 
 export default function DashboardPage() {
+  const router = useRouter()
+
+  useEffect(() => {
+    const signedUp = localStorage.getItem('signedUp') === 'true'
+    const walletGenerated = localStorage.getItem('walletGenerated') === 'true'
+
+    if (!signedUp && !walletGenerated) {
+      router.push('/signup')
+    }
+  }, [router])
+
   return (
     <div className="flex h-screen bg-gray-100 text-gray-900">
       <Sidebar />
