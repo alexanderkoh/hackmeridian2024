@@ -6,6 +6,13 @@ import { useRouter } from 'next/navigation'
 import { PasskeyKit } from 'passkey-kit'
 import { env } from '../env'
 
+// If necessary, extend the PasskeyKit type to include the generateWallet method
+declare module 'passkey-kit' {
+  interface PasskeyKit {
+    generateWallet(): Promise<{ publicKey: string; privateKey: string }>; // Replace with actual return type
+  }
+}
+
 export default function WelcomePage() {
   const [agreedToTerms, setAgreedToTerms] = useState(false)
   const [passkeyKit, setPasskeyKit] = useState<PasskeyKit | null>(null)

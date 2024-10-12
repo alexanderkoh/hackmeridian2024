@@ -17,12 +17,13 @@ const dummyData: CheckoutData = {
   currency: "USD"
 }
 
-export default function CheckoutTemplate({ data = dummyData }: { data?: CheckoutData }) {
+export default function PaymentLinkPage() {
   const [email, setEmail] = useState('')
   const [phone, setPhone] = useState('')
   const [isSignedUp, setIsSignedUp] = useState(false)
   const [isWalletGenerated, setIsWalletGenerated] = useState(false)
   const [canPay, setCanPay] = useState(false)
+  const [data] = useState<CheckoutData>(dummyData)
 
   useEffect(() => {
     const allFieldsFilled = email !== '' && phone !== ''

@@ -1,8 +1,11 @@
+import React from 'react';
+import Link from 'next/link';
+
 export default function HomePage() {
   return (
     <div>
       <h1>Welcome to the Home Page</h1>
-      <p>This is the content of your home page.</p>
+      <Link href="/dashboard">Go to Dashboard</Link>
     </div>
-  )
+  );
 }
