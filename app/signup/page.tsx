@@ -37,7 +37,7 @@ export default function WelcomePage() {
     try {
       const userId = 'user-' + Date.now();
       const username = 'user@example.com'; // You might want to collect this from the user
-      const { built } = await passkeyKit.createWallet(userId, username);
+      await passkeyKit.createWallet(userId, username);
 
       console.log('Passkey registration successful');
       localStorage.setItem('userAuthenticated', 'true')
