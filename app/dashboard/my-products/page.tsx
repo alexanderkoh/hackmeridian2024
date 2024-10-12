@@ -96,7 +96,9 @@ export default function ProductsPage() {
                       <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">{product.description}</td>
                       <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">${product.price}</td>
                       <td className="px-6 py-4 whitespace-nowrap text-sm text-blue-600 hover:underline">
-                        <Link href={product.link}>View</Link>
+                        <Link href={product.link} target="_blank" rel="noopener noreferrer">
+                          View
+                        </Link>
                       </td>
                       <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
                         <button

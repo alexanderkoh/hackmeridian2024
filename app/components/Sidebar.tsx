@@ -16,7 +16,7 @@ export default function Sidebar() {
   return (
     <div className="w-64 bg-white border-r">
       <div className="flex items-center justify-center h-16 border-b">
-        <span className="text-xl font-bold">HackMeridian</span>
+        <span className="text-xl font-bold">Soropay</span>
       </div>
       <nav className="mt-6">
         {navItems.map((item) => (
