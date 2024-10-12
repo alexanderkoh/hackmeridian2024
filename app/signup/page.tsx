@@ -63,7 +63,9 @@ export default function WelcomePage() {
     }
 
     try {
-      const { keyId, contractId } = await passkeyKit.generateWallet();
+      const userId = 'user-' + Date.now();
+      const username = 'user@example.com'; // You might want to collect this from the user
+      const { keyId, contractId } = await passkeyKit.createWallet(userId, username);
       
       localStorage.setItem('sp:keyId', keyId);
       localStorage.setItem(`sp:cId:${keyId}`, contractId);
