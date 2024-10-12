@@ -1,20 +1,37 @@
 'use client'
 
-import { useEffect } from 'react'
+import { useEffect, useState } from 'react'
 import { useRouter } from 'next/navigation'
 import Sidebar from '../components/Sidebar'
+import { PasskeyKit } from 'passkey-kit'
+import { env } from '../env'
 
 export default function DashboardPage() {
   const router = useRouter()
+  const [isConnected, setIsConnected] = useState(false)
 
   useEffect(() => {
-    const signedUp = localStorage.getItem('signedUp') === 'true'
-    const walletGenerated = localStorage.getItem('walletGenerated') === 'true'
-
-    if (!signedUp && !walletGenerated) {
-      router.push('/signup')
+    const checkWalletConnection = async () => {
+      const storedKeyId = localStorage.getItem('sp:keyId')
+      if (storedKeyId) {
+        const storedContractId = localStorage.getItem(`sp:cId:${storedKeyId}`)
+        if (storedContractId) {
+          setIsConnected(true)
+          // Here you can fetch wallet balance or perform other operations
+        } else {
+          router.push('/signup')
+        }
+      } else {
+        router.push('/signup')
+      }
     }
+
+    checkWalletConnection()
   }, [router])
+
+  if (!isConnected) {
+    return <div>Loading...</div>
+  }
 
   return (
     <div className="flex h-screen bg-gray-100 text-gray-900">

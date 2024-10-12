@@ -44,10 +44,12 @@ export default function WelcomePage() {
     try {
       const userId = 'user-' + Date.now();
       const username = 'user@example.com'; // You might want to collect this from the user
-      await passkeyKit.createWallet(userId, username);
+      const { keyId, contractId } = await passkeyKit.createWallet(userId, username);
+
+      localStorage.setItem('sp:keyId', keyId);
+      localStorage.setItem(`sp:cId:${keyId}`, contractId);
 
       console.log('Passkey registration successful');
-      localStorage.setItem('userAuthenticated', 'true')
       router.push('/dashboard')
     } catch (error) {
       console.error('Sign up with passkey failed:', error)
@@ -61,9 +63,12 @@ export default function WelcomePage() {
     }
 
     try {
-      const wallet = await passkeyKit.generateWallet();
-      console.log('Wallet generated', wallet);
-      localStorage.setItem('userAuthenticated', 'true')
+      const { keyId, contractId } = await passkeyKit.generateWallet();
+      
+      localStorage.setItem('sp:keyId', keyId);
+      localStorage.setItem(`sp:cId:${keyId}`, contractId);
+
+      console.log('Wallet generated', { keyId, contractId });
       router.push('/dashboard')
     } catch (error) {
       console.error('Wallet generation failed:', error)
