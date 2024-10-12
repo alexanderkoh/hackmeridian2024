@@ -1,6 +1,8 @@
 'use client'
 
 import { useState, useEffect } from 'react'
+import { PasskeyKit } from 'passkey-kit'
+import { env } from '../env'
 
 interface CheckoutData {
   companyName: string
@@ -9,7 +11,6 @@ interface CheckoutData {
   currency: string
 }
 
-// Dummy data for testing
 const dummyData: CheckoutData = {
   companyName: "Alice's Company",
   itemName: "Basic Website Development",
@@ -20,40 +21,90 @@ const dummyData: CheckoutData = {
 export default function PaymentLinkPage() {
   const [email, setEmail] = useState('')
   const [phone, setPhone] = useState('')
-  const [isSignedUp, setIsSignedUp] = useState(false)
-  const [isWalletGenerated, setIsWalletGenerated] = useState(false)
+  const [isConnected, setIsConnected] = useState(false)
   const [canPay, setCanPay] = useState(false)
   const [data] = useState<CheckoutData>(dummyData)
+  const [passkeyKit, setPasskeyKit] = useState<PasskeyKit | null>(null)
+  const [accountBalance, setAccountBalance] = useState<string | null>(null)
+
+  useEffect(() => {
+    const initPasskeyKit = () => {
+      if (env.PUBLIC_rpcUrl && env.PUBLIC_networkPassphrase && env.PUBLIC_factoryContractId) {
+        const kit = new PasskeyKit({
+          rpcUrl: env.PUBLIC_rpcUrl,
+          networkPassphrase: env.PUBLIC_networkPassphrase,
+          factoryContractId: env.PUBLIC_factoryContractId,
+        });
+        setPasskeyKit(kit);
+      } else {
+        console.error('Environment variables are not set correctly');
+      }
+    };
+
+    initPasskeyKit();
+  }, []);
 
   useEffect(() => {
     const allFieldsFilled = email !== '' && phone !== ''
-    const walletReady = isSignedUp || isWalletGenerated
-    setCanPay(allFieldsFilled && walletReady)
-  }, [email, phone, isSignedUp, isWalletGenerated])
+    setCanPay(allFieldsFilled && isConnected)
+  }, [email, phone, isConnected])
 
-  const handleSignUp = async () => {
+  const handleConnectWallet = async () => {
+    if (!passkeyKit) {
+      console.error('PasskeyKit not initialized');
+      return;
+    }
+
     try {
-      await new Promise(resolve => setTimeout(resolve, 1000))
-      setIsSignedUp(true)
-      console.log('User signed up and wallet connected via passkey')
+      const { keyId, contractId } = await passkeyKit.connectWallet();
+      const keyIdString = Buffer.from(keyId).toString('hex');
+      localStorage.setItem('sp:keyId', keyIdString);
+      localStorage.setItem(`sp:cId:${keyIdString}`, contractId);
+      setIsConnected(true);
+      await fetchAccountBalance(contractId);
     } catch (error) {
-      console.error('Sign up failed:', error)
+      console.error('Connect wallet failed:', error)
     }
   }
 
-  const handleGenerateWallet = async () => {
+  const handleCreateWallet = async () => {
+    if (!passkeyKit) {
+      console.error('PasskeyKit not initialized');
+      return;
+    }
+
     try {
-      await new Promise(resolve => setTimeout(resolve, 1000))
-      setIsWalletGenerated(true)
-      console.log('Wallet generated successfully')
+      const userId = 'user-' + Date.now();
+      const username = email; // Use email as username
+      const { keyId, contractId } = await passkeyKit.createWallet(userId, username);
+      const keyIdString = Buffer.from(keyId).toString('hex');
+      localStorage.setItem('sp:keyId', keyIdString);
+      localStorage.setItem(`sp:cId:${keyIdString}`, contractId);
+      setIsConnected(true);
+      await fetchAccountBalance(contractId);
     } catch (error) {
-      console.error('Wallet generation failed:', error)
+      console.error('Create wallet failed:', error)
+    }
+  }
+
+  const fetchAccountBalance = async (contractId: string) => {
+    if (!passkeyKit) {
+      console.error('PasskeyKit not initialized');
+      return;
+    }
+
+    try {
+      const balance = await passkeyKit.getBalance(contractId);
+      setAccountBalance(balance.toString());
+    } catch (error) {
+      console.error('Failed to fetch account balance:', error);
     }
   }
 
   const handlePay = () => {
     if (canPay) {
       console.log('Processing payment...')
+      // Implement payment logic here
     }
   }
 
@@ -104,37 +155,41 @@ export default function PaymentLinkPage() {
         </div>
 
         <div className="space-y-4">
-          <button 
-            className="w-full bg-gray-200 hover:bg-gray-300 text-gray-700 font-bold py-2 px-4 rounded" 
-            onClick={handleSignUp}
-            disabled={isSignedUp}
-          >
-            {isSignedUp ? 'Signed Up & Wallet Connected' : 'Sign Up & Connect Wallet'}
-          </button>
-          <button 
-            className="w-full bg-gray-200 hover:bg-gray-300 text-gray-700 font-bold py-2 px-4 rounded" 
-            onClick={handleGenerateWallet}
-            disabled={isWalletGenerated}
-          >
-            {isWalletGenerated ? 'Wallet Generated' : 'Generate Wallet'}
-          </button>
-          <button 
-            className="w-full bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded" 
-            onClick={handlePay}
-            disabled={!canPay}
-          >
-            Pay
-          </button>
+          {!isConnected && (
+            <>
+              <button 
+                className="w-full bg-gray-200 hover:bg-gray-300 text-gray-700 font-bold py-2 px-4 rounded" 
+                onClick={handleConnectWallet}
+              >
+                Connect Wallet
+              </button>
+              <button 
+                className="w-full bg-gray-200 hover:bg-gray-300 text-gray-700 font-bold py-2 px-4 rounded" 
+                onClick={handleCreateWallet}
+              >
+                Create New Wallet
+              </button>
+            </>
+          )}
+          {isConnected && (
+            <button 
+              className="w-full bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded" 
+              onClick={handlePay}
+              disabled={!canPay}
+            >
+              Pay
+            </button>
+          )}
         </div>
 
-        {(isSignedUp || isWalletGenerated) && (
+        {isConnected && accountBalance !== null && (
           <div className="mt-6">
             <h3 className="text-lg font-semibold mb-2 text-white">Account Balance</h3>
-            <p className="text-2xl font-bold text-white">$12,345.67 <span className="text-green-600 text-sm">+2.5%</span></p>
-            <p className="text-xl text-white">$10,000.00 <span className="text-green-600 text-sm">+1.2%</span></p>
+            <p className="text-2xl font-bold text-white">{accountBalance} {data.currency}</p>
           </div>
         )}
       </div>
     </div>
   )
 }
+

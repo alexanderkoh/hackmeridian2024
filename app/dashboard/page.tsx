@@ -3,8 +3,6 @@
 import { useEffect, useState } from 'react'
 import { useRouter } from 'next/navigation'
 import Sidebar from '../components/Sidebar'
-import { PasskeyKit } from 'passkey-kit'
-import { env } from '../env'
 
 export default function DashboardPage() {
   const router = useRouter()
