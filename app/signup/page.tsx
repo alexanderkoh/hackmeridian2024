@@ -3,7 +3,7 @@
 import { useState, useEffect } from 'react'
 import Link from 'next/link'
 import { useRouter } from 'next/navigation'
-import { PasskeyKit, PasskeyServer } from 'passkey-kit'
+import { PasskeyKit } from 'passkey-kit'
 import { env } from '../env'
 
 export default function WelcomePage() {
@@ -37,10 +37,7 @@ export default function WelcomePage() {
     try {
       const userId = 'user-' + Date.now();
       const username = 'user@example.com'; // You might want to collect this from the user
-      const { keyId_base64, contractId, built } = await passkeyKit.createWallet(userId, username);
-
-    await server.send(built)
-
+      const { built } = await passkeyKit.createWallet(userId, username);
 
       console.log('Passkey registration successful');
       localStorage.setItem('userAuthenticated', 'true')
