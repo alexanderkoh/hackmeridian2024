@@ -6,9 +6,9 @@ import AddProduct from '../../components/AddProduct'
 
 export default function ProductsPage() {
   const [products, setProducts] = useState([
-    { id: 1, name: 'Product 1', category: 'Category A', created: '2024-03-15', link: 'https://example.com/product1' },
-    { id: 2, name: 'Product 2', category: 'Category B', created: '2024-03-16', link: 'https://example.com/product2' },
-    { id: 3, name: 'Product 3', category: 'Category A', created: '2024-03-17', link: 'https://example.com/product3' },
+    { id: 1, name: 'Product 1', category: 'Category A', created: '2024-03-15', link: '/payment-link' },
+    { id: 2, name: 'Product 2', category: 'Category B', created: '2024-03-16', link: '/payment-link' },
+    { id: 3, name: 'Product 3', category: 'Category A', created: '2024-03-17', link: '/payment-link' },
   ])
   const [isModalOpen, setIsModalOpen] = useState(false)
 
