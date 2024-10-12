@@ -2,7 +2,19 @@
 
 import { useState } from "react"
 
-export default function AddProduct() {
+interface Product {
+  id: string;
+  name: string;
+  description: string;
+  price: string;
+  link: string;
+}
+
+function generateUniqueId(): string {
+  return `${Date.now()}-${Math.random().toString(36).substr(2, 9)}`;
+}
+
+export default function AddProduct({ onProductAdded }: { onProductAdded: (product: Product) => void }) {
   const [product, setProduct] = useState({
     name: "",
     description: "",
@@ -16,7 +28,13 @@ export default function AddProduct() {
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault()
-    console.log("Product submitted:", product)
+    const productId = generateUniqueId();
+    const newProduct: Product = {
+      id: productId,
+      ...product,
+      link: `/payment-link/${productId}`
+    }
+    onProductAdded(newProduct)
     setProduct({ name: "", description: "", price: "" })
   }
 

@@ -3,6 +3,7 @@
 import { useState, useEffect } from 'react'
 import { PasskeyKit } from 'passkey-kit'
 import { env } from '../env'
+import { useSearchParams } from 'next/navigation'
 
 interface CheckoutData {
   companyName: string
@@ -19,6 +20,10 @@ const dummyData: CheckoutData = {
 }
 
 export default function PaymentLinkPage() {
+  const searchParams = useSearchParams()
+  const productName = searchParams.get('product')
+  const productPrice = searchParams.get('price')
+
   const [email, setEmail] = useState('')
   const [phone, setPhone] = useState('')
   const [isConnected, setIsConnected] = useState(false)
@@ -94,7 +99,8 @@ export default function PaymentLinkPage() {
     }
 
     try {
-      const balance = await passkeyKit.getBalance(contractId);
+      const xdr = await passkeyKit.getBalanceXDR(contractId);
+      const balance = await passkeyKit.submitXDR(xdr);
       setAccountBalance(balance.toString());
     } catch (error) {
       console.error('Failed to fetch account balance:', error);
@@ -116,12 +122,12 @@ export default function PaymentLinkPage() {
         <div className="bg-white rounded-lg shadow-md p-6">
           <h2 className="text-xl font-semibold mb-4 text-gray-900">Payment Details</h2>
           <div className="mb-4">
-            <p className="font-medium text-gray-900">Item: {data.itemName}</p>
-            <p className="text-2xl font-bold text-gray-900">{data.amount} {data.currency}</p>
+            <p className="font-medium text-gray-900">Item: {productName || data.itemName}</p>
+            <p className="text-2xl font-bold text-gray-900">${productPrice || data.amount} {data.currency}</p>
           </div>
           <div className="border-t pt-4">
-            <p className="flex justify-between text-gray-900"><span>Subtotal</span><span>{data.amount} {data.currency}</span></p>
-            <p className="flex justify-between font-bold mt-2 text-gray-900"><span>Total Due Today</span><span>{data.amount} {data.currency}</span></p>
+            <p className="flex justify-between text-gray-900"><span>Subtotal</span><span>${productPrice || data.amount} {data.currency}</span></p>
+            <p className="flex justify-between font-bold mt-2 text-gray-900"><span>Total Due Today</span><span>${productPrice || data.amount} {data.currency}</span></p>
           </div>
         </div>
       </div>
@@ -192,4 +198,3 @@ export default function PaymentLinkPage() {
     </div>
   )
 }
-
