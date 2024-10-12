@@ -75,11 +75,11 @@ export default function CheckoutTemplate({ data = dummyData }: { data?: Checkout
       </div>
 
       {/* Right Column */}
-      <div className="w-full md:w-1/2 p-8">
-        <h2 className="text-xl font-semibold mb-6 text-gray-900">1. Contact</h2>
+      <div className="w-full md:w-1/2 p-8 bg-black">
+        <h2 className="text-xl font-semibold mb-6 text-white">Contact</h2>
         <div className="space-y-4 mb-6">
           <div>
-            <label htmlFor="email" className="block text-sm font-medium text-gray-700">Email</label>
+            <label htmlFor="email" className="block text-sm font-medium text-white">Email</label>
             <input 
               id="email" 
               type="email" 
@@ -90,7 +90,7 @@ export default function CheckoutTemplate({ data = dummyData }: { data?: Checkout
             />
           </div>
           <div>
-            <label htmlFor="phone" className="block text-sm font-medium text-gray-700">Phone</label>
+            <label htmlFor="phone" className="block text-sm font-medium text-white">Phone</label>
             <input 
               id="phone" 
               type="tel" 
@@ -128,9 +128,9 @@ export default function CheckoutTemplate({ data = dummyData }: { data?: Checkout
 
         {(isSignedUp || isWalletGenerated) && (
           <div className="mt-6">
-            <h3 className="text-lg font-semibold mb-2 text-gray-900">Account Balance</h3>
-            <p className="text-2xl font-bold text-gray-900">$12,345.67 <span className="text-green-600 text-sm">+2.5%</span></p>
-            <p className="text-xl text-gray-900">$10,000.00 <span className="text-green-600 text-sm">+1.2%</span></p>
+            <h3 className="text-lg font-semibold mb-2 text-white">Account Balance</h3>
+            <p className="text-2xl font-bold text-white">$12,345.67 <span className="text-green-600 text-sm">+2.5%</span></p>
+            <p className="text-xl text-white">$10,000.00 <span className="text-green-600 text-sm">+1.2%</span></p>
           </div>
         )}
       </div>
