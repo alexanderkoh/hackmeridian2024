@@ -1,4 +1,4 @@
-# Soropay: Seamless DeFi Onboarding with Passkeys
+# Soropay: Seamless DeFi Payment Links with Passkeys
 
 ## Overview
 
