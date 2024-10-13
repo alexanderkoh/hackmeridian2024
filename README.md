@@ -1,3 +1,5 @@
+![GitHub Banner](https://github.com/alexanderkoh/hackmeridian2024/blob/main/githubbanner1.png)
+
 # Soropay: Seamless DeFi Payment Links with Passkeys
 
 ## Overview
