@@ -3,7 +3,7 @@
 import { useState, useEffect } from 'react'
 import { PasskeyKit } from 'passkey-kit'
 import { env } from '../../env'
-import { useParams } from 'next/navigation'
+import { useParams, useRouter } from 'next/navigation'
 
 interface CheckoutData {
   companyName: string
@@ -14,6 +14,7 @@ interface CheckoutData {
 
 export default function PaymentLinkPage() {
   const params = useParams()
+  const router = useRouter()
   const productId = params.productId as string
 
   const [product, setProduct] = useState<CheckoutData | null>(null)
@@ -122,6 +123,10 @@ export default function PaymentLinkPage() {
     }
   }
 
+  const handleAddFunds = () => {
+    window.open('https://anchors.stellar.org', '_blank', 'noopener,noreferrer');
+  }
+
   if (!product) {
     return <div>Loading...</div>
   }
@@ -190,13 +195,21 @@ export default function PaymentLinkPage() {
             </>
           )}
           {isConnected && (
-            <button 
-              className="w-full bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded" 
-              onClick={handlePay}
-              disabled={!canPay}
-            >
-              Pay
-            </button>
+            <>
+              <button 
+                className="w-full bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded" 
+                onClick={handlePay}
+                disabled={!canPay}
+              >
+                Pay
+              </button>
+              <button 
+                className="w-full bg-green-500 hover:bg-green-700 text-white font-bold py-2 px-4 rounded" 
+                onClick={handleAddFunds}
+              >
+                Add Funds to Wallet
+              </button>
+            </>
           )}
         </div>
 

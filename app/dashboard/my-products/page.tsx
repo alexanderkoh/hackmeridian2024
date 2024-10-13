@@ -18,6 +18,7 @@ export default function ProductsPage() {
   const [isModalOpen, setIsModalOpen] = useState(false)
   const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false)
   const [productToDelete, setProductToDelete] = useState<string | null>(null)
+  const [copiedLink, setCopiedLink] = useState<string | null>(null)
 
   useEffect(() => {
     const storedProducts = localStorage.getItem('products')
@@ -55,6 +56,15 @@ export default function ProductsPage() {
   const handleDeleteCancel = () => {
     setIsDeleteModalOpen(false)
     setProductToDelete(null)
+  }
+
+  const handleCopyLink = (link: string) => {
+    navigator.clipboard.writeText(window.location.origin + link)
+      .then(() => {
+        setCopiedLink(link)
+        setTimeout(() => setCopiedLink(null), 2000) // Reset after 2 seconds
+      })
+      .catch(err => console.error('Failed to copy link: ', err))
   }
 
   return (
@@ -99,6 +109,15 @@ export default function ProductsPage() {
                         <Link href={product.link} target="_blank" rel="noopener noreferrer">
                           View
                         </Link>
+                        <button
+                          onClick={() => handleCopyLink(product.link)}
+                          className="ml-2 text-gray-500 hover:text-gray-700"
+                        >
+                          📋
+                        </button>
+                        {copiedLink === product.link && (
+                          <span className="ml-2 text-green-500 text-xs">Copied!</span>
+                        )}
                       </td>
                       <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
                         <button
